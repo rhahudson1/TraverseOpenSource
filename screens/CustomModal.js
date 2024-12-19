@@ -11,10 +11,11 @@ import {
   Alert,
 } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
+import * as ImagePicker from 'expo-image-picker'; // New import
 
 const { width, height } = Dimensions.get('window');
 
-const CustomModal = ({ visible, onClose, onPhotoSelected }) => {
+const CustomModal = ({ visible, onClose }) => {
   const [photos, setPhotos] = useState([]);
 
   // Fetch photos from the camera roll
@@ -49,6 +50,24 @@ const CustomModal = ({ visible, onClose, onPhotoSelected }) => {
     }
   }, [visible]);
 
+  // Handle photo click
+  const handlePhotoPress = async (photo) => {
+    try {
+      const croppedResult = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1], // Square crop
+        base64: false,
+        uri: photo.uri,
+      });
+
+      if (!croppedResult.canceled) {
+        Alert.alert('Photo Cropped', 'Photo cropped successfully!');
+      }
+    } catch (err) {
+      console.error('Error cropping photo:', err);
+    }
+  };
+
   return (
     <Modal
       visible={visible}
@@ -72,12 +91,12 @@ const CustomModal = ({ visible, onClose, onPhotoSelected }) => {
             numColumns={3}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => onPhotoSelected(item.uri)}>
+              <TouchableOpacity onPress={() => handlePhotoPress(item)}>
                 <Image source={{ uri: item.uri }} style={styles.photo} />
               </TouchableOpacity>
             )}
             contentContainerStyle={styles.photoGrid}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={false} // Disable scroll bar visibility
           />
         </View>
       </View>

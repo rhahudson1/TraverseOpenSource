@@ -1,23 +1,22 @@
 import React from 'react';
-import { View, Image, StyleSheet, Button } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 
-const ResultsScreen = ({ route, navigation }) => {
-  const { croppedImageUri } = route.params;
+export default function ResultsScreen({ route }) {
+  const { image } = route.params;
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: croppedImageUri }} style={styles.image} />
-      <Button title="Go Back" onPress={() => navigation.goBack()} />
+      <Image source={{ uri: image.uri }} style={styles.image} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
   },
   image: {
     width: 300,
@@ -25,5 +24,3 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 });
-
-export default ResultsScreen;
